@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache updateCheck="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+
+    <!-- Sets the path to the directory where cache .data files are created.
+
+         If the path is a Java System Property it is replaced by
+         its value in the running VM.
+
+         The following properties are translated:
+         user.home - User's home directory
+         user.dir - User's current working directory
+         java.io.tmpdir - Default temp file path 
+    -->
+    <diskStore path="java.io.tmpdir" />
+
+    <!--Default Cache configuration. These will applied to caches programmatically created through
+        the CacheManager.
+
+        The following attributes are required for defaultCache:
+
+        maxInMemory       - Sets the maximum number of objects that will be created in memory
+        eternal           - Sets whether elements are eternal. If eternal,  timeouts are ignored and the element
+                            is never expired.
+        timeToIdleSeconds - Sets the time to idle for an element before it expires. Is only used
+                            if the element is not eternal. Idle time is now - last accessed time
+        timeToLiveSeconds - Sets the time to live for an element before it expires. Is only used
+                            if the element is not eternal. TTL is now - creation time
+        overflowToDisk    - Sets whether elements can overflow to disk when the in-memory cache
+                            has reached the maxInMemory limit.
+    -->
+    <defaultCache maxElementsInMemory="10000" eternal="false"
+        statistics="true" timeToIdleSeconds="120" timeToLiveSeconds="120"
+        overflowToDisk="true" diskPersistent="false" 
+        diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU"/>
+        
+    	
+	<cache name="trustedAuthorizationCacheMap"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />
+     	
+    <cache name="stateCache" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>        
+        
+    <cache name="stateCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>        
+    
+    <cache name="residencyStateCache" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>        
+        
+    <cache name="residencyStateCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/> 
+        
+	<cache name="hospitalAffiliationStateCache" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>        
+        
+    <cache name="hospitalAffiliationStateCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>
+            
+    <cache name="countryCache" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>        
+        
+    <cache name="countryCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/> 
+        
+    <cache name="USOccupationsCache" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>  
+                
+     <cache name="specialtyCache" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>        
+        
+    <cache name="specialtyCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/> 
+        
+    <cache name="professionalAssociationCache" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>        
+        
+    <cache name="professionalAssociationCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/> 
+        
+    <cache name="emailTypesCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>     
+        
+     <cache name="enterpriseSiteRolesCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>      
+        
+    <cache name="etemailHtmlCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>         
+        
+    <cache name="etemailOptinsCacheMap" 
+		eternal="true"
+		overflowToDisk="false"
+        maxElementsInMemory="1"/>   
+        
+     <cache name="eulaVersionCacheMap"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />
+     	
+     <cache name="disclaimerVersionCacheMap"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />
+     	
+     <cache name="etTemplatesCacheMap"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />	
+
+	<cache name="etLoginDataCacheMap"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />	
+
+	<cache name="emailDeliveryStatusCacheMap"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />
+
+	<cache name="ipMapping"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />	
+     	
+     <cache name="ecommDataCacheMap"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />	
+
+     <cache name="ecommConfigLogCacheMap"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />
+     	
+     <cache name="applicationsCacheMap"
+     	eternal="true"
+     	overflowToDisk="false"
+     	maxElementsInMemory="1" />
+     	
+     <cache name="enterpriseUserMemberCache"
+     	eternal="false"
+		timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600"
+     	overflowToDisk="false"
+		maxElementsInMemory="100000" />
+
+     <cache name="userCache"
+     	eternal="false"
+		timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600"
+     	overflowToDisk="false"
+		maxElementsInMemory="1300000" />
+
+     <cache name="nameRuleRevisionCacheMap"
+        eternal="true"
+        overflowToDisk="false"
+        maxElementsInMemory="1" />
+
+     <cache name="nameRuleRevisionCache"
+        eternal="true"
+        overflowToDisk="false"
+        maxElementsInMemory="1" />
+
+     <cache name="nameRuleRevisionIdCache"
+        eternal="true"
+        overflowToDisk="false"
+        maxElementsInMemory="1" />
+
+     <cache name="nameRuleRevisionLatestCache"
+        eternal="true"
+        overflowToDisk="false"
+        maxElementsInMemory="1" />
+
+    <cache name="StdNameMap"
+        eternal="true"
+        overflowToDisk="false"
+        maxElementsInMemory="100000" />
+
+    <cache name="StdNameMapCacheMap"
+        eternal="true"
+        overflowToDisk="false"
+        maxElementsInMemory="100000" />
+
+    <cache name="mdpTokenCache" 
+        eternal="true"
+        overflowToDisk="false"
+        maxElementsInMemory="1"/>
+        
+    <cache name="sfTokenCache"
+        eternal="false"
+        timeToIdleSeconds="10800"
+        timeToLiveSeconds="10800"
+        overflowToDisk="false"
+        maxElementsInMemory="1"/>
+
+    <cache name="securityQuestionCache"
+        eternal="true"
+        overflowToDisk="false"
+        maxElementsInMemory="1000"/>
+        
+    <cache name="ssoProviderCache"
+    	eternal="false"
+    	overflowToDisk="false"
+    	timeToIdleSeconds="300"
+    	timeToLiveSeconds="300"
+    	maxElementsInMemory="10000"/>
+
+    <cache name="enterpriseDomainBlacklistCache"
+           eternal="true"
+           overflowToDisk="false"
+           timeToIdleSeconds="21600"
+           timeToLiveSeconds="21600"
+           maxElementsInMemory="15000" />
+
+</ehcache>

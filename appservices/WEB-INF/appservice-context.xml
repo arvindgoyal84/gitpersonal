@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+  	xmlns:jpa="http://www.springframework.org/schema/data/jpa"    
+  	xmlns:task="http://www.springframework.org/schema/task"    
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+    	http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+    	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+    	http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.2.xsd">
+	
+	<!-- Declare support for general annotations -->
+	<context:annotation-config/>		
+	<context:property-placeholder location="classpath:appservice.properties"/>
+	
+	<!-- Activates @Scheduled and @Async annotations for scheduling -->
+	<task:annotation-driven/>
+	
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<cache:annotation-driven cache-manager="cacheManager"/>
+	
+	<context:component-scan base-package="com.epocrates.sso,com.epocrates.appservice,com.epocrates.cats,com.epocrates.honors,com.epocrates.normalize, com.epocrates.match, com.epocrates.mdp, com.epocrates.test"/>
+
+	<jpa:repositories base-package="com.epocrates.appservice.jpa.repository"/>
+    <jpa:repositories base-package="com.epocrates.sso"/>
+
+	<!-- Declare explicit support for annotation-driven MVC Controllers. This is used for JSON support via Jackson -->
+	<mvc:annotation-driven/>
+	
+	<mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/tool/cache/**"/>
+            <bean class="com.epocrates.appservice.interceptor.IPAuthInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/tool/mdp/**"/>
+            <bean class="com.epocrates.appservice.interceptor.IPAuthInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/tool/quartz/**"/>
+            <bean class="com.epocrates.appservice.interceptor.IPAuthInterceptor" />
+        </mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/tool/api/**"/>
+			<bean class="com.epocrates.appservice.interceptor.IPAuthInterceptor" />
+		</mvc:interceptor>
+    </mvc:interceptors>
+	
+	<!-- Configure primary data source via JNDI lookup -->
+	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/VenusDataSource" resource-ref="true" expected-type="javax.sql.DataSource" />
+    
+	<!-- For validator -->
+	<bean id="validator"
+    class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+	
+	<!-- Configure JPA container entity manager and JPA transaction manager -->
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="packagesToScan" value="com.epocrates.match,com.epocrates.appservice.dto,com.epocrates.normalize.service,com.epocrates.normalize.dto"/>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="false"/>
+				<property name="generateDdl" value="false"/>
+ 				<property name="databasePlatform" value="org.hibernate.dialect.Oracle10gDialect"/>
+			</bean>
+		</property>		
+		<property name="jpaProperties">
+        	<props>
+	           	<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+        	   	<prop key="hibernate.connection.show_sql">false</prop>
+                <prop key="hibernate.format_sql">true</prop>
+           		<prop key="hibernate.generate_statistics">true</prop>
+           		<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+           		<prop key="hibernate.default_batch_fetch_size">500</prop>
+           		<prop key="hibernate.max_fetch_depth">5</prop>
+           		<prop key="hibernate.jdbc.batch_size">1000</prop>
+           		<prop key="hibernate.connection.charset">UTF-8</prop>
+        	</props>
+    	</property>    	 		
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+  
+	<bean id="defaultEhCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="shared" value="false"/>
+    	<property name="configLocation" value="/WEB-INF/ehcache.xml"/> 
+    </bean>  
+    
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">  
+     	<property name="cacheManager" ref="defaultEhCacheManager"></property>  
+    </bean>	
+
+	<bean id="openPropertyPlaceholderConfigurer" class="com.epocrates.appservice.util.OpenPropertyPlaceholderConfigurer" scope="singleton">
+		<property name="locations">
+			<list>
+				<value>classpath:appservice.properties</value>
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true"/>
+	</bean>
+	
+
+	<bean id="contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+	    <property name="order" value="0"/>
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json"/>
+			</map>
+		</property>
+		<property name="defaultContentType" value="application/json"/>
+		<property name="defaultViews">
+			<list>
+				<bean name="mappingJacksonJsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+				 	<property name="contentType" value="application/json"/>
+				 </bean>				 
+			</list>
+		</property>
+	    <property name="viewResolvers">
+	        <list>
+	            <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+	        </list>
+	    </property>		
+	</bean>
+
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail.smtp.host}"/>
+	</bean>
+	 
+	<bean id="exceptionMessage" class="org.springframework.mail.SimpleMailMessage">
+		<property name="from" value="${mail.from}"/>
+		<property name="to" value="${mail.recipients}"/>
+		<property name="subject" value="Appservice: an exception has occurred"/>
+	</bean>
+	
+	<bean id="backboneErrorTemplate" class="org.springframework.mail.SimpleMailMessage">
+	   <property name="from" value="${mail.from}"/>
+	   <property name="to" value="${mail.recipients.backbone}"/>
+	   <property name="subject" value="Appservice Backbone: an error has occured"/>
+	</bean>
+	
+	<bean id ="backboneInfoTemplate" class="org.springframework.mail.SimpleMailMessage">
+	   <property name="from" value="${mail.from}"/>
+	   <property name="to" value="${mail.recipients.backbone}"/>
+	   <property name="subject" value="Appservice Backbone: information"/>
+	</bean>
+	
+	 <bean id="mailMessage" class="org.springframework.mail.SimpleMailMessage">
+		<property name="from" value="${mail.from}"/>
+		<property name="to" value="${mail.recipients.info}"/>
+		<property name="subject" value="Appservice: infomation"/>
+	</bean>
+
+	<bean id="emailVerificationTemplate" class="org.springframework.mail.SimpleMailMessage">
+		<property name="from" value="${mail.from}"/>
+		<property name="to" value="${mail.recipients.emailverify}"/>
+		<property name="subject" value="Email Verification Code"/>
+	</bean>
+
+	<bean id="emailNotificationService" class="com.epocrates.appservice.service.EmailNotificationService">
+		<constructor-arg name="mailSender" index="0" ref="mailSender"/>
+	   	<constructor-arg name="errorMessageTemplate" index="1" ref="exceptionMessage"/>
+	   	<constructor-arg name="infoMessageTemplate" index="2" ref="mailMessage"/>
+	   	<constructor-arg name="backboneErrorTemplate" index="3" ref="backboneErrorTemplate"/>
+	   	<constructor-arg name="backboneInfoTemplate" index="4" ref="backboneInfoTemplate"/>
+		<constructor-arg name="emailVerificationTemplate" index="5" ref="emailVerificationTemplate"/>
+	   	<constructor-arg name="mailPriority" index="6" value="${mail.priority.info}"/>
+	</bean>	
+
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
+	<bean id="normalizeUserService" class="com.epocrates.normalize.service.NormalizeUserServiceImpl" />
+	<bean id="normalizeBatchService" class="com.epocrates.normalize.service.NormalizeBatchService" />
+	<bean id="matchBatchService" class="com.epocrates.match.service.MatchBatchService" />
+
+
+	<bean id="defaultExceptionHandler" class="com.epocrates.appservice.handler.DefaultExceptionHandler">
+	    <property name="exceptionMappings">
+            <map>
+            	<entry key="com.epocrates.soa.exceptions" value="mappingJacksonJsonView"/>
+            	<entry key="RuntimeException" value="mappingJacksonJsonView"/>
+            </map>
+        </property>
+		<property name="priorityExceptionMappings">
+		    <map>
+		    	<entry key="com.epocrates.soa.exceptions" value="High"/>
+		    	<entry key="RuntimeException" value="High"/>
+	    	</map>
+	  	</property>
+		<property name="priorityNotificationServicesMappings">
+	    	<map>
+	      		<entry key="High" value-ref="emailNotificationService"/>
+	    	</map>
+	  	</property>
+        <property name="notificationMessage" value="Appservice exception priority - High : "/>  	
+        <property name="defaultErrorView" value="mappingJacksonJsonView"/>
+        <property name="order" value="9"/>
+    </bean>
+    
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    </bean>
+	
+	<!--  Cousumer side mq Definition -->
+	<bean id="consumerConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jms/ConsumerCF" />
+	</bean>
+	
+	<bean id="regMDPTopic" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="regMDPTopic" />
+	</bean>
+	<bean id="topicHandler" class="com.epocrates.appservice.jms.TopicErrorHandler"/>
+	
+	<bean id="topicListener" class="com.epocrates.appservice.jms.TopicListener">
+	    <property name="amqTopicTemplate">
+			<ref bean="amqTopicTemplate" />
+		</property>
+	    <property name="regMDPTopic">
+			<ref bean="regMDPTopic" />
+		</property>
+    </bean>
+	 
+	<jms:listener-container connection-factory="consumerConnectionFactory" concurrency="1" 
+	    error-handler="topicHandler" destination-type="topic">
+                 <jms:listener destination="regMDPTopic" ref="topicListener"/>
+    </jms:listener-container>
+	
+
+    <bean id="producerConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jms/ServiceCF" />
+	</bean>
+
+	<bean id="amqTopicTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<constructor-arg ref="producerConnectionFactory" />
+		<property name="pubSubDomain" value="true"/>
+		<property name="explicitQosEnabled" value="true"/>
+	</bean>
+</beans>

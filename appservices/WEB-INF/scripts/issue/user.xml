@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project default="test">
+	<target name="test">
+		<webtest name="${user_url}">
+			<config protocol="${protocol}" host="${host}" port="${port}" >
+				<header name="Authorization" value="Basic ${user_api_auth}"/>
+				<header name="Content-Type" value="${content_type_json}"/>
+			</config>			
+			
+			<!--INVOKE CALL TO CREATE USER-->
+			<repeat count="2">
+				<invoke url="${user_url}" method="POST" content="${user_request#{count}}" />	
+				<storeResponseCode property="status_code"/>
+				<verifyProperty property="status_code"  text="${user_status_code}"/>		
+			</repeat>
+						
+		</webtest>
+	</target>
+</project>

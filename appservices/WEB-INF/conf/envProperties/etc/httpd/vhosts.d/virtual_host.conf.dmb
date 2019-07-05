@@ -1,0 +1,32 @@
+<Directory /opt/apache/htdocs>
+        Allow from all
+        Options +Indexes
+</Directory>
+      ProxyPass /miredot !
+
+<VirtualHost *:80>
+    ProxyRequests Off
+    <Location />
+      ProxyPass ajp://localhost:8009/
+      ProxyPassReverse ajp://localhost:8009/
+    </Location>
+    ErrorLog /var/log/httpd/error_log
+    CustomLog /var/log/httpd/access_log common
+</VirtualHost>
+
+<VirtualHost *:443>
+  ProxyRequests Off
+  SSLEngine on
+  SSLProtocol -all +TLSv1 +SSLv3
+  SSLCipherSuite HIGH:MEDIUM:!aNULL:+SHA1:+MD5:+HIGH:+MEDIUM
+  SSLCertificateFile /etc/httpd/my-server.crt
+  SSLCertificateKeyFile /etc/httpd/my-server.key
+  <Location />
+      ProxyPass ajp://localhost:8009/
+      ProxyPassReverse ajp://localhost:8009/
+  </Location>
+
+    ErrorLog /var/log/httpd/ssl_error_log
+    CustomLog /var/log/httpd/ssl_access_log common
+</VirtualHost>
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security 
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+    
+    <!-- <global-method-security pre-post-annotations="enabled"></global-method-security> -->
+	<http pattern="/authsecured/**" create-session="stateless" authentication-manager-ref="authenticationManager" entry-point-ref="basicAuthenticationEntryPoint" realm="appservices">
+		<custom-filter position="FIRST" ref="restAuthenticationFilter"/>
+		<custom-filter position="BASIC_AUTH_FILTER" ref="userBasicAuthenticationFilter"/>
+   		<intercept-url pattern="/authsecured/**" access="ROLE_USER"/>
+   		<intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+	</http>
+
+
+	<http pattern="/login" create-session="stateless" authentication-manager-ref="securedAuthenticationManager" entry-point-ref="basicAuthenticationEntryPoint" realm="appservices">
+		<custom-filter position="BASIC_AUTH_FILTER" ref="securedBasicAuthenticationFilter"/>
+		<intercept-url pattern="/login" access="ROLE_USER"/>
+		<intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+	</http>
+
+
+	<authentication-manager id="authenticationManager">
+        <authentication-provider ref="userAuthenticationProvider"></authentication-provider>
+    </authentication-manager>
+
+	<authentication-manager id="securedAuthenticationManager">
+		<authentication-provider ref="securedAuthenticationProvider"></authentication-provider>
+	</authentication-manager>
+
+
+	<beans:bean id="userBasicAuthenticationFilter" class="com.epocrates.appservice.filter.UserBasicAuthenticationFilter">
+    	<beans:constructor-arg name="authenticationManager" ref="authenticationManager"/>
+    	<beans:constructor-arg name="authenticationEntryPoint" ref="basicAuthenticationEntryPoint"/>
+	</beans:bean>
+
+
+	<beans:bean id="securedBasicAuthenticationFilter" class="com.epocrates.appservice.filter.SecuredBasicAuthenticationFilter">
+		<beans:constructor-arg name="authenticationManager" ref="securedAuthenticationManager"/>
+		<beans:constructor-arg name="authenticationEntryPoint" ref="basicAuthenticationEntryPoint"/>
+	</beans:bean>
+
+	<beans:bean id="basicAuthenticationEntryPoint" class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+    	<beans:property name="realmName" value="appservices"/>
+	</beans:bean>
+
+    <beans:bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener"/>
+     
+</beans:beans>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<project default="ProdIssueSuite">
+	
+	<property file="../properties/createusers.properties" />
+	
+	<target name="ProdIssueSuite" description="runs all the tests">		
+		<ant antfile="user.xml"/>
+	</target>
+</project>

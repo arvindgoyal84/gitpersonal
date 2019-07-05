@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data version="1.8"
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_1_8.xsd">
+
+ 	<schedule>
+		<job>
+			<name>PushProfileToCloudJob</name>
+			<group>PushProfileToCloudJobGroup</group>
+			<job-class>com.epocrates.appservice.job.PushProfileToCloudJob</job-class>
+			<volatility>false</volatility>
+            <durability>true</durability>
+            <recover>false</recover>
+		</job>
+	</schedule>
+
+ 	<schedule>
+		<job>
+			<name>SetInternalUserJob</name>
+			<group>SetInternalUserJobGroup</group>
+			<job-class>com.epocrates.appservice.job.SetInternalUserJob</job-class>
+			<volatility>false</volatility>
+            <durability>true</durability>
+            <recover>false</recover>
+		</job>
+	</schedule>
+
+	<schedule>
+		<job>
+			<name>RefreshAllCacheJob</name>
+			<group>RefreshAllCacheJobGroup</group>
+			<job-class>com.epocrates.appservice.job.RefreshAllCacheJob</job-class>
+			<volatility>false</volatility>
+            <durability>true</durability>
+            <recover>false</recover>
+		</job>
+	</schedule>
+
+</job-scheduling-data>

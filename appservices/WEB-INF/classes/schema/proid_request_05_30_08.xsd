@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="BLSClient" type="BLSClient" />
+	<xs:element name="Action">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Alias"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Address">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Street"/>
+				<xs:element ref="City"/>
+				<xs:element ref="State"/>
+				<xs:element ref="Zip"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="DateOfBirth">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Year"/>
+				<xs:element ref="Month"/>
+				<xs:element ref="Day"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Year"  type="xs:string"/>
+	<xs:element name="Month" type="xs:string"/>
+	<xs:element name="Day"   type="xs:string"/>
+	<xs:element name="Alias"  type="xs:string"/>
+	<xs:element name="AnswerID" type="xs:string"/>
+	<xs:complexType name="BLSClient">
+			<xs:sequence>
+				<xs:element ref="Header"/>
+				<xs:element ref="Transaction"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:element name="City"  type="xs:string"/>
+	<xs:element name="FirstName" type="xs:string"/>
+	<xs:element name="Header">
+		<xs:complexType>
+			<xs:attribute name="Account_Id" type="xs:string"/>				
+			<xs:attribute name="Operator_Id" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="LastName"  type="xs:string"/>
+	<xs:element name="QuestionID" type="xs:string"/>
+	<xs:element name="QuestionResult">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="QuestionID"/>
+				<xs:element ref="AnswerID"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="QuizResults">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="QuestionResult" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SocialSecurityNumber"  type="xs:string"/>
+	<xs:element name="State" type="xs:string"/>
+	<xs:element name="Street"  type="xs:string"/>
+	<xs:element name="Subject">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="FirstName"/>
+				<xs:element ref="LastName"/>
+				<xs:element ref="SocialSecurityNumber"/>
+				<xs:element ref="DateOfBirth"/>
+				<xs:element ref="Address"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Transaction">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Header"/>
+				<xs:element ref="QuizResults"/>
+				<xs:element ref="Subject"/>
+				<xs:element ref="Action"/>
+			</xs:sequence>
+			<xs:attribute name="Id" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Zip"  type="xs:string"/>
+</xs:schema>
