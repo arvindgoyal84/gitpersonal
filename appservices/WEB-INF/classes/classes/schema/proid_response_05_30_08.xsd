@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="BLSClient" type="BLSClient" />
+	<xs:element name="Action">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Result"/>
+			</xs:sequence>
+			<xs:attribute name="Alias" use="required" type="xs:string"/>
+			<xs:attribute name="Id" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Answer">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="AnswerText"/>
+			</xs:sequence>
+			<xs:attribute name="AnswerID" use="required" type="xs:string"/>				
+			<xs:attribute name="sequence" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AnswerText"  type="xs:string"/>
+	<xs:element name="Answers">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Answer" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="BLSClient">
+			<xs:sequence>
+				<xs:element ref="Transaction"/>
+			</xs:sequence>
+			<xs:attribute name="Version" use="required" type="xs:string"/>
+	</xs:complexType>
+	<xs:element name="Data">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="IdentityQuizRequest"/>
+				<xs:element ref="score"/>
+				<xs:element ref="SUID"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Description" type="xs:string"/>
+	<xs:element name="IdentityQuizRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="QuizID"/>
+				<xs:element ref="RemainingQuizzes"/>
+				<xs:element ref="RespondByTime"/>
+				<xs:element ref="Questions"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Question">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="QuestionText"/>
+				<xs:element ref="Answers"/>
+			</xs:sequence>
+			<xs:attribute name="QuestionID" use="required" type="xs:string"/>
+			<xs:attribute name="sequence" use="required" type="xs:string"/>
+			<xs:attribute name="type" use="required" type="xs:string"/>
+			<xs:attribute name="eq" use="required" type="xs:boolean"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="QuestionText" type="xs:string"/>
+	<xs:element name="Questions">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Question" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="QuizID" type="xs:string"/>
+	<xs:element name="RemainingQuizzes" type="xs:string"/>
+	<xs:element name="RespondByTime" type="xs:string"/>
+	<xs:element name="ResponseIds" type="xs:string"/>
+	<xs:element name="Result">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Description"/>
+				<xs:element ref="Status"/>
+				<xs:element ref="ResponseIds"/>
+				<xs:element ref="Data"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SUID" type="xs:string"/>
+	<xs:element name="Status" type="xs:string"/>
+	<xs:element name="Transaction">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Action"/>
+			</xs:sequence>
+			<xs:attribute name="Id" use="required" type="xs:string"/>
+			<xs:attribute name="IId" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="score" type="xs:string"/>
+</xs:schema>
